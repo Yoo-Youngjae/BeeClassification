@@ -7,7 +7,7 @@ from PIL import Image
 import numpy as np
 import matplotlib.pyplot as plt
 import random
-from input import getTestList, getTrainList
+from process import getTestList, getTrainList, getTestLabel
 
 folder_name_mel = 'mellifera/*.jpg'
 folder_name_cer = 'cerana/*.jpg'
@@ -22,7 +22,7 @@ height = 960
 batch_size = 10
 total_epoch = 10
 total_batch = int(len(data_list)/ batch_size)
-dropout = 0.3
+dropout = 0.7
 
 test_size = 5
 
@@ -85,6 +85,7 @@ for epoch in range(total_epoch):
     if epoch % 2 == 0:
         folder_name = folder_name_cer
         # cerana가 [1,0].
+
         batch_ys = np.array([1, 0])
     else:
         folder_name = folder_name_mel
@@ -95,11 +96,7 @@ for epoch in range(total_epoch):
     rand_end = total_image_num // batch_size
     start = random.randrange(0, rand_end - 1)
     train_data = getTrainList(data_list, start, batch_size)
-    test_data = getTestList(data_list, start, batch_size, test_size)
-
-
-    # 전체 image 수가 batch_size 나눴을때 나머지 생기면 버림.
-
+    test_data = getTestList(test_size)
 
     #start 기준으로 batch size 갯수 만큼 뽑음.
     for i in train_data:
@@ -122,15 +119,18 @@ for epoch in range(total_epoch):
                                           rate: dropout})
         total_cost += cost_val
 
-    print('Epoch:', '%04d' % (epoch + 1), 'Avg. cost =', '{:.3f}'.format(total_cost / total_batch))
+    print('Epoch:', '%04d' % (epoch + 1), 'Avg. cost =', '{:.3f}'.format(total_cost / len(train_data)))
     # 훈련 끝
-    total_acc = 0
-    for i in test_data:
-        image = Image.open(i).resize((width, height))
-        image = np.array(image)
-        test_xs = image.reshape(-1, height, width, 3)
-        total_acc += sess.run(accuracy, feed_dict={X: test_xs, Y: batch_ys, rate: 1})
-    print('정확도:', total_acc/test_size)
 
+    # 전체 image 수가 batch_size 나눴을때 나머지 생기면 버림.
+    if epoch % 10 == 0 and epoch != 0:
+        total_acc = 0
+        for i in test_data:
+            image = Image.open(i).resize((width, height))
+            image = np.array(image)
+            test_xs = image.reshape(-1, height, width, 3)
+            test_ys = getTestLabel(i)
+            total_acc += sess.run(accuracy, feed_dict={X: test_xs, Y: test_ys, rate: 1})
+        print('정확도:', total_acc/test_size)
 
 print('최적화 완료!')
