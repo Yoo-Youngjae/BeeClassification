@@ -24,7 +24,7 @@ total_epoch = 10
 total_batch = int(len(data_list)/ batch_size)
 dropout = 0.7
 
-test_size = 5
+test_size = 10
 
 X = tf.placeholder(tf.float32, [None, height, width, 3])
 Y = tf.placeholder(tf.float32, [None, 2])
