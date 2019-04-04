@@ -7,19 +7,23 @@ def getTrainList(list, start, batch_size):
 
 def getTestList(test_size):
     test_full_list = glob('test/*.jpg')
-    ran_num = random.randrange(0, len(test_full_list)-test_size)
-    test_list = test_full_list[ran_num: ran_num+test_size]
+    test_list = test_full_list
+    # ran_num = random.randrange(0, len(test_full_list)-test_size)
+    # test_list = test_full_list[ran_num: ran_num+test_size]
     return test_list
 
 def getTestLabel(name):
+    start = name.index('/')
+    end = name.index('.')
+    name = name[start+1:end] #/이후부터 . 이전까지의 이름 찾아냄
     f = open("test_label", 'r')
     res_arr = np.array([1,0])
     while True:
         line = f.readline()
         try:
             if line.index(name) >= 0:
-                res = line[len(name) + 1:len(name) + 2]
-                print(res)
+                # test_label 에서 정확히 정답만 골라냄.
+                res = line[len(name)+1:len(name)+2]
                 if res == '0':
                     # print('this is cerana')
                     res_arr = np.array([1, 0])
