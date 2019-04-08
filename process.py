@@ -2,8 +2,22 @@ from glob import glob
 import random
 import numpy as np
 
-def getTrainList(list, start, batch_size):
-    return list[start * batch_size: start * batch_size + batch_size]
+def getTrainList(start, batch_size):
+    f = open("train_data", 'r')
+    lines = f.readlines()
+    f.close()
+
+    return lines[start * batch_size: start * batch_size + batch_size]
+def getTrainLabel(item):
+    end = item.index('jpg')
+    train_Xs = item[:end+3]
+    trainlabel = item[end+4:end+5]
+    if trainlabel == '0':
+        train_Ys = np.array([1, 0])
+    else:
+        train_Ys = np.array([0, 1])
+
+    return train_Xs, train_Ys
 
 def getTestList(test_size):
     test_full_list = glob('test/*.jpg')
