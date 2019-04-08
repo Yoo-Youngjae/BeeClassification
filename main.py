@@ -21,11 +21,12 @@ width = 2736
 height = 1824
 
 batch_size = 10
-total_epoch = 40
+total_epoch = 1
 dropout = 0.3
 
 test_size = 20
 RGBnum = 1
+lr= 0.00000005
 
 report = open("report", 'w')
 
@@ -59,7 +60,7 @@ W4 = tf.Variable(tf.random_normal([256, 2], stddev=0.01))
 model = tf.matmul(L3, W4)
 softmax = tf.nn.softmax(model)
 cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=model, labels=Y))
-optimizer = tf.train.AdamOptimizer(0.0001).minimize(cost)
+optimizer = tf.train.AdamOptimizer(lr).minimize(cost)
 
 #정확도 확인을 위함
 is_correct = tf.equal(tf.argmax(model, 1), tf.argmax(Y, 1))
@@ -143,25 +144,33 @@ for epoch in range(total_epoch):
             test_xs = test_xs.reshape(-1, height, width, RGBnum)
             test_ys = getTestLabel(i).reshape(-1, 2)
             # report 에 쓰기
-            my_res = "답은 ", np.array2string(test_ys, precision=2, separator=',', suppress_small=True), "\n"
-            report.write(''.join(my_res))
+
             res_arr = sess.run(softmax, feed_dict={X: test_xs, Y: test_ys, rate: 1})
             print(res_arr)
-            com_res = "컴퓨터 답은 ", np.array2string(res_arr, precision=2, separator=',', suppress_small=True), "\n"
-            report.write(''.join(com_res))
 
             test_res = sess.run(accuracy, feed_dict={X: test_xs, Y: test_ys, rate: 1})
             # 틀렸을때 틀린 사진 보여주기
-            # if test_res == 0:
+            if test_res == 0:
+                if test_ys[0][0] == 1:
+                    my_res = "정답은 cerana\n"
+                else:
+                    my_res = "정답은 mellifera\n"
+                com_res = "이번 문제는 ", i, "\n"
+                report.write(''.join(com_res))
+                report.write(my_res)
             #     plt.imshow(image, cmap='gray')
             #     plt.show()
 
             total_acc += test_res
+
         print('테스트 정확도:', total_acc/test_size)
+        res = total_acc/test_size
+        test_res_report = '테스트 정확도:'+str(res)+"\n"
+        report.write(test_res_report)
         ## 정확도 0.7 이상이면 Save
-        if total_acc/test_size >=0.5:
-            print("SAVE")
-            saver.save(sess, checkpoint_path, global_step=epoch)
+        # if total_acc/test_size >=0.5:
+        #     print("SAVE")
+        #     saver.save(sess, checkpoint_path, global_step=epoch)
         report.write('============================\n')
 
 print('프로그램 종료')

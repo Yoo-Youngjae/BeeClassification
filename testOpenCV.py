@@ -27,18 +27,22 @@ def transBG2GW(imgSrc):
     # cv.destroyAllWindows()
 
     # 위의 것을 거친과정이 아래의 한줄이다.
-    # histogram 평활화 하려면 아래걸로.
-    equ_img = cv.equalizeHist(gray)
-
-    # OTSH 기법 이용하려면 이걸로
-    ret, th1 = cv.threshold(equ_img, 100, 255, cv.THRESH_OTSU)
+    # # histogram 평활화 하려면 아래걸로.
+    # equ_img = cv.equalizeHist(gray)
     #
+    # # # OTSH 기법 이용하려면 이걸로
+    # ret, th1 = cv.threshold(equ_img, 100, 255, cv.THRESH_OTSU)
+
     # plt.imshow(th1, cmap='gray')
+    # plt.show()
+    cla_img = cv.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+    cll = cla_img.apply(gray)
+    # plt.imshow(cll, cmap='gray')
     # plt.show()
 
 
     # ret, th1 = cv.threshold(gray, 100, 255, cv.THRESH_BINARY)
-    return gray
+    return cll
 
 # mel_list = glob('mellifera/*.jpg')
 # img = cv.imread(mel_list[10], cv.IMREAD_COLOR)
