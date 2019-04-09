@@ -20,13 +20,13 @@ total_image_num = len(data_list) * 2
 width = 2736
 height = 1824
 
-batch_size = 10
-total_epoch = 1
-dropout = 0.3
+batch_size = 20
+total_epoch = 30
+dropout = 0.7
 
-test_size = 20
+test_size = 15
 RGBnum = 1
-lr= 0.00000005
+lr= 0.0001
 
 report = open("report", 'w')
 
@@ -58,7 +58,7 @@ L3 = tf.nn.dropout(L3, rate)
 
 W4 = tf.Variable(tf.random_normal([256, 2], stddev=0.01))
 model = tf.matmul(L3, W4)
-softmax = tf.nn.softmax(model)
+softmax = tf.nn.softmax(model, name='softmax')
 cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=model, labels=Y))
 optimizer = tf.train.AdamOptimizer(lr).minimize(cost)
 
@@ -168,9 +168,9 @@ for epoch in range(total_epoch):
         test_res_report = '테스트 정확도:'+str(res)+"\n"
         report.write(test_res_report)
         ## 정확도 0.7 이상이면 Save
-        # if total_acc/test_size >=0.5:
-        #     print("SAVE")
-        #     saver.save(sess, checkpoint_path, global_step=epoch)
+        if total_acc/test_size >=0.9:
+            print("SAVE")
+            saver.save(sess, checkpoint_path, global_step=epoch)
         report.write('============================\n')
 
 print('프로그램 종료')

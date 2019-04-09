@@ -2,20 +2,38 @@ import tensorflow as tf
 import os
 import numpy as np
 from testOpenCV import transBG2GW
+import matplotlib.pyplot as plt
+
+######## 파일 이름 과 정답 적기 #######
+filename = "./cerana/Project_Image025_3.jpg"
+metafileName = 'model-15.meta'
+answer = 'cerana'
+###################################
+
 ## 변수
 width = 2736
 height = 1824
-filename = "./test/Project_Image133_2.jpg"
 RGBnum = 1
-
 image = transBG2GW(filename)
 image = np.array(image)
+plt.imshow(image, cmap='gray')
+plt.show()
+
 test_xs = image
 test_xs = test_xs.reshape(-1, height, width, RGBnum)
-test_ys = np.array([0, 1]).reshape(-1, 2)
+
+
+# cerana = 0 = [1,0]
+# mellifera = 1 = [0,1]
+
+if answer == 'mellifera':
+    test_ys = np.array([0, 1]).reshape(-1, 2)
+else:        # cerana 일때
+    test_ys = np.array([1, 0]).reshape(-1, 2)
+
 
 with tf.Session() as sess:
-    saver = tf.train.import_meta_graph('model-0.meta')
+    saver = tf.train.import_meta_graph(metafileName)
     saver.restore(sess,tf.train.latest_checkpoint('./'))
 
     graph = tf.get_default_graph()
@@ -26,9 +44,20 @@ with tf.Session() as sess:
     feed_dict ={X: test_xs, Y: test_ys, rate: 1}
     #
     accuracy = graph.get_tensor_by_name("accuracy:0")
+    softmax = graph.get_tensor_by_name("softmax:0")
     #
     # 최종 결과 출력
-    print (sess.run(accuracy,feed_dict ={X: test_xs, Y: test_ys, rate: 1}))
+    correct_res = sess.run(accuracy,feed_dict ={X: test_xs, Y: test_ys, rate: 1})
+    soft_res = sess.run(softmax,feed_dict ={X: test_xs, Y: test_ys, rate: 1})
+    if soft_res[0][0] > 0.5:
+        print("답은 cerana")
+    else:
+        print("답은 mellifera")
+
+    if correct_res == 1:
+        print("정답")
+    else:
+        print("오답")
 
 
 

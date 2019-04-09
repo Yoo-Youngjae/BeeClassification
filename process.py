@@ -12,7 +12,7 @@ def getTrainLabel(item):
     end = item.index('jpg')
     train_Xs = item[:end+3]
     trainlabel = item[end+4:end+5]
-    if trainlabel == '0':
+    if trainlabel == '0': # 0이면 cerana
         train_Ys = np.array([1, 0])
     else:
         train_Ys = np.array([0, 1])
