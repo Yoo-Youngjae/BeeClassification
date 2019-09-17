@@ -167,7 +167,7 @@ for epoch in range(total_epoch):
         res = total_acc/test_size
         test_res_report = '테스트 정확도:'+str(res)+"\n"
         report.write(test_res_report)
-        ## 정확도 0.7 이상이면 Save
+        ## 정확도 0.9 이상이면 Save
         if total_acc/test_size >=0.9:
             print("SAVE")
             saver.save(sess, checkpoint_path, global_step=epoch)

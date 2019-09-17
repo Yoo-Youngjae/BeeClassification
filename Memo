@@ -1,2 +1,7 @@
 cerana = 0 = [1,0]
 mellifera = 1 = [0,1]
+
+013_02 를 변형시킨게 transMellifera2 이다.
+
+transMellifera2 의 정답률은 0.5431321
+project013_02 의 정답률은 0.54250914

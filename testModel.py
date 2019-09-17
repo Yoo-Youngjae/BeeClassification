@@ -4,8 +4,9 @@ import numpy as np
 from testOpenCV import transBG2GW
 import matplotlib.pyplot as plt
 
+
 ######## 파일 이름 과 정답 적기 #######
-filename = "./cerana/Project_Image025_3.jpg"
+filename = "./test/Project_Image013_2.jpg" #Project_Image013_2.jpg"
 metafileName = 'model-15.meta'
 answer = 'cerana'
 ###################################
@@ -20,6 +21,7 @@ plt.imshow(image, cmap='gray')
 plt.show()
 
 test_xs = image
+print(test_xs.shape)
 test_xs = test_xs.reshape(-1, height, width, RGBnum)
 
 
@@ -30,7 +32,6 @@ if answer == 'mellifera':
     test_ys = np.array([0, 1]).reshape(-1, 2)
 else:        # cerana 일때
     test_ys = np.array([1, 0]).reshape(-1, 2)
-
 
 with tf.Session() as sess:
     saver = tf.train.import_meta_graph(metafileName)
@@ -50,8 +51,10 @@ with tf.Session() as sess:
     correct_res = sess.run(accuracy,feed_dict ={X: test_xs, Y: test_ys, rate: 1})
     soft_res = sess.run(softmax,feed_dict ={X: test_xs, Y: test_ys, rate: 1})
     if soft_res[0][0] > 0.5:
+        print('cerena 일 확률',soft_res[0][0]);
         print("답은 cerana")
     else:
+        print('melifera 일 확률', soft_res[0][1]);
         print("답은 mellifera")
 
     if correct_res == 1:
