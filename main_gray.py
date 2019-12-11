@@ -20,11 +20,11 @@ total_image_num = len(data_list) * 2
 width = 2736
 height = 1824
 
-batch_size = 10
+batch_size = 20
 total_epoch = 30
 dropout = 0.7
 
-test_size = 8
+test_size = 15
 RGBnum = 3
 lr= 0.0001
 
@@ -133,7 +133,6 @@ for epoch in range(total_epoch):
         total_acc = 0
         w_epoch = "Epoch ", str(epoch), '\n'
         report.write(''.join(w_epoch))
-
         for i in test_data:
             # ORIGINAL OPEN
             image = Image.open(i).resize((width, height))
@@ -144,32 +143,32 @@ for epoch in range(total_epoch):
             test_xs = image
             test_xs = test_xs.reshape(-1, height, width, RGBnum)
             test_ys = getTestLabel(i).reshape(-1, 2)
-
             # report 에 쓰기
-            res_arr = sess.run(softmax, feed_dict={X: test_xs, Y: test_ys, rate: 1})
-            # print(res_arr)
-            test_res = sess.run(accuracy, feed_dict={X: test_xs, Y: test_ys, rate: 1})
-            # print(test_res)
-            total_acc = total_acc + test_res
-            # 틀렸을때 틀린 사진 보여주기
-            # if test_res == 0:
-            #     if test_ys[0][0] == 1:
-            #         my_res = "정답은 cerana\n"
-            #     else:
-            #         my_res = "정답은 mellifera\n"
-            #     com_res = "이번 문제는 ", i, "\n"
-            #     report.write(''.join(com_res))
-            #     report.write(my_res)
-            # #     plt.imshow(image, cmap='gray')
-            # #     plt.show()
 
+            res_arr = sess.run(softmax, feed_dict={X: test_xs, Y: test_ys, rate: 1})
+            print(res_arr)
+
+            test_res = sess.run(accuracy, feed_dict={X: test_xs, Y: test_ys, rate: 1})
+            # 틀렸을때 틀린 사진 보여주기
+            if test_res == 0:
+                if test_ys[0][0] == 1:
+                    my_res = "정답은 cerana\n"
+                else:
+                    my_res = "정답은 mellifera\n"
+                com_res = "이번 문제는 ", i, "\n"
+                report.write(''.join(com_res))
+                report.write(my_res)
+            #     plt.imshow(image, cmap='gray')
+            #     plt.show()
+
+            total_acc += test_res
 
         print('테스트 정확도:', total_acc/test_size)
         res = total_acc/test_size
         test_res_report = '테스트 정확도:'+str(res)+"\n"
         report.write(test_res_report)
         ## 정확도 0.9 이상이면 Save
-        if total_acc/test_size >=0.86:
+        if total_acc/test_size >=0.9:
             print("SAVE")
             saver.save(sess, checkpoint_path, global_step=epoch)
         report.write('============================\n')

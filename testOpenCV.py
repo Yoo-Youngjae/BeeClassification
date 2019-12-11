@@ -13,6 +13,8 @@ def transBG2GW(imgSrc):
 
     gray = cv.cvtColor(img, cv.COLOR_RGB2GRAY)
 
+    plt.imshow(gray, cmap='gray')
+    plt.show()
 
 
     # hist, bin = np.histogram(imgSrc.flatten(), 256, [0, 256])

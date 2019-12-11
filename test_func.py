@@ -7,7 +7,7 @@ from glob import glob
 f = open("test_label", 'w')
 #mellifera 의 사진 번호를 보여줌.
 #mellifera 면 1
-folder_name_mel = 'mellifera/*.jpg'
+folder_name_mel = 'test/*.jpg'
 data_list = glob(folder_name_mel)
 for i in data_list:
     dot_index = i.index('.')
@@ -16,11 +16,11 @@ for i in data_list:
 
 #cerana 의 사진 번호를 보여줌.
 #cerana 가 0
-folder_name_cer = 'cerana/*.jpg'
-data_list_2 = glob(folder_name_cer)
-for i in data_list_2:
-    dot_index = i.index('.')
-    print(i[7:])
-    f.write(i[7: dot_index] + " 0\n")
-
-f.close()
+# folder_name_cer = 'cerana/*.jpg'
+# data_list_2 = glob(folder_name_cer)
+# for i in data_list_2:
+#     dot_index = i.index('.')
+#     print(i[7:])
+#     f.write(i[7: dot_index] + " 0\n")
+#
+# f.close()

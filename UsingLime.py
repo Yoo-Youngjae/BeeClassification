@@ -23,6 +23,7 @@ RGBnum = 3
 # image = Image.open(filename).resize((width, height))
 image = Image.open(filename)
 image = np.array(image)
+
 test_xs = image
 print(test_xs.shape)
 # test_xs = test_xs.reshape(-1,height, width,3)

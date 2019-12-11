@@ -3,19 +3,26 @@ import os
 import numpy as np
 from testOpenCV import transBG2GW
 import matplotlib.pyplot as plt
+from PIL import Image
+import cv2 as cv
 
 
 ######## 파일 이름 과 정답 적기 #######
-filename = "./test/Project_Image013_2.jpg" #Project_Image013_2.jpg"
-metafileName = 'model-15.meta'
+filename = "./testright/Project_Image013_2.jpg" #Project_Image013_2.jpg"
+metafileName = '/Users/youngjae/PycharmProjects/projectFirst/model/model-18.meta'
+metafile = '/Users/youngjae/PycharmProjects/projectFirst/model/model-18'
 answer = 'cerana'
 ###################################
 
 ## 변수
 width = 2736
 height = 1824
-RGBnum = 1
-image = transBG2GW(filename)
+RGBnum = 3
+# origin 사진 보여주기
+image = Image.open(filename)
+
+# 흑백화 사진 보여주기
+# image = transBG2GW(filename)
 image = np.array(image)
 plt.imshow(image, cmap='gray')
 plt.show()
@@ -35,7 +42,7 @@ else:        # cerana 일때
 
 with tf.Session() as sess:
     saver = tf.train.import_meta_graph(metafileName)
-    saver.restore(sess,tf.train.latest_checkpoint('./'))
+    saver.restore(sess,metafile)
 
     graph = tf.get_default_graph()
     X = graph.get_tensor_by_name("X:0")
@@ -50,6 +57,7 @@ with tf.Session() as sess:
     # 최종 결과 출력
     correct_res = sess.run(accuracy,feed_dict ={X: test_xs, Y: test_ys, rate: 1})
     soft_res = sess.run(softmax,feed_dict ={X: test_xs, Y: test_ys, rate: 1})
+    print(soft_res)
     if soft_res[0][0] > 0.5:
         print('cerena 일 확률',soft_res[0][0]);
         print("답은 cerana")

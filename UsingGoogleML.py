@@ -17,16 +17,20 @@ def get_prediction(content, project_id, model_id):
 
 if __name__ == '__main__':
 
-  file_path = "./testright/Project_Image013_2.jpg"
+  file_path = "/Users/youngjae/PycharmProjects/projectFirst/test/Project_Image136_2.jpg"
+  filename2 = "/Users/youngjae/PycharmProjects/projectFirst/output.jpg"
   project_id = 593934753829
   model_id = 'ICN6214291365001473062'
 
+  # image1 = Image.open(file_path)
+  #
+  # image1 = np.array(image1)
+  # im = Image.fromarray(image1)
+  # im.save("output.jpg")
   with open(file_path, 'rb') as ff:
       content = ff.read()
 
-  image = Image.open(file_path)
-  image = np.array(image)
-  content1 = image.tobytes()
+
 
   res = get_prediction(content, project_id, model_id).payload[0]
   print(res.display_name)
@@ -34,3 +38,5 @@ if __name__ == '__main__':
     print([[res.classification.score,1-res.classification.score]])
   else:
     print([[ 1 -res.classification.score, res.classification.score]])
+
+# export GOOGLE_APPLICATION_CREDENTIALS="/Users/youngjae/PycharmProjects/projectFirst/MyFirstProject-1802eb3657c5.json"
